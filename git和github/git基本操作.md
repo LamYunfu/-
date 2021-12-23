@@ -8,6 +8,8 @@
 
   `git branch`
 
+  `git branch -a ` 同时查看本地分支与远程分支情况
+
 * 创建分支
 
   `git branch feature-A`
@@ -15,6 +17,10 @@
 * 切换分支
 
   `git checkout feature-A`
+
+* 删除分支
+
+  `git checkout -d (branchname)`
 
 * 创建新的分支并切换到该分支下
 
@@ -31,6 +37,10 @@
 * 查看工作树和最新提交的差别
 
   `git diff HEAD`
+
+* 从暂存区中移除文件
+
+  `git rm filename`
 
 ---
 
@@ -49,6 +59,18 @@
 * 以图表形式查看日志
 
   `git log --graph`
+
+* 以简洁一行的方式来查看日志
+
+  `git log --oneline`
+
+* 用--reverse参数来逆向显示所有日志。
+
+  `git log --reverse`
+
+* 查看指定文件的修改记录
+
+  `git blame <file>`
 
 ---
 
@@ -143,10 +165,6 @@ git rebase -i HEAD~3
 
  所以，虽然此时HEAD所指向的内容正是我们所需要的，但是master分支是没有任何变化的，`git`只是将C~E部分的提交内容复制一份粘贴到了master所指向的提交后面，我们需要做的就是将master所指向的提交id设置为当前HEAD所指向的提交id就可以了，即:
 
-
-
-
-
 ```undefined
       git checkout master
       git reset --hard  0c72e64
@@ -156,5 +174,117 @@ git rebase -i HEAD~3
 
 此时我们才大功告成！
 
+---
+
+#### 4. 推送至远程仓库
+
+**git push** 命用于从将本地的分支版本上传到远程并合并。
+
+命令格式如下：
+
+```
+git push <远程主机名> <本地分支名>:<远程分支名>
+```
+
+如果本地分支名与远程分支名相同，则可以省略冒号：
+
+```
+git push <远程主机名> <本地分支名>
+```
+
+在推送至远程仓库的过程中，可以添加-u参数
+
+```
+git push -u origin master
+```
+
+-u参数可以在推送的同时，将 origin 仓库的 master 分 支设置为本地仓库当前分支的 upstream（上游）。添加了这个参数，将来运行 git pull命令从远程仓库获取内容时，本地仓库的这个分支就可以直接从 origin 的 master 分支获取内容，省去了另外添加参数的麻烦。
+
+#### 5. 从远程仓库获取
+
+* 获取远程仓库
+
+`git clone 仓库地址`
+
+执行 git clone命令后我们会默认处于 master 分支下，同时系统会自动将 origin 设置成该远程仓库的标识符。也就是说，当前本地仓库 的 master 分支与 GitHub 端远程仓库（origin）的 master 分支在内容上是完全相同的
+
+* 获取远程分支
+
+`git checkout -b feature-D origin/feature-D`
+
+\- b 参数的后面是本地仓库中新建分支的名称。为了便于理解，我 们仍将其命名为 feature-D，让它与远程仓库的对应分支保持同名。新建分支名称后面是获取来源的分支名称。例子中指定了 origin/feature-D， 就是说以名为 origin 的仓库（这里指 GitHub 端的仓库）的feature-D 分支为来源，在本地仓库中创建 feature-D 分支。
+
+---
+
+#### 5. HEAD^和HEAD~
+
+`^`和`~`是2个很有意思的字符，配合使用可表示祖宗十八代。任你给一个节点（HEAD 或 哈希值），都能顺藤摸瓜，找到其祖先是谁。
+
+网友通常这么解释：
+
+- `^`：表示第几个父/母亲 ——　git存在多个分支合并的情况，所以不只有1对父母亲
+- `~`：表示向上找第几代，相当于连续几个 `^`
+
+比如有这样一个库：
 
 
+
+```undefined
+          b1(HEAD)
+          |
+C4 ------ C6
+         /
+   --- C5
+
+自己: C6 = HEAD^0         = HEAD~0         = C6^0       = C6~0    
+父亲: C4 = HEAD^1 = HEAD^ = HEAD~1 = HEAD~ = C6^1 = C6^ = C6~1 = C6~ 
+母亲: C5 = HEAD^2                          = C6^2 
+```
+
+---
+
+#### 6. 查看提交历史
+
+**git log 常用选项**
+
+* 显示每次提交的差异
+
+  `git log -p/--patch -2`  显示最近两次提交的差异
+
+* 看到每次提交的简略统计信息，可以使用 `--stat` 选项：
+
+  `git log --stat`
+
+* 用不同于默认格式的方式展示提交历史
+
+  `git log --pretty=oneline`
+
+---
+
+#### 7. 撤销操作
+
+* 重新提交覆盖上一次提交
+
+  `git commit --amend`
+
+* 取消暂存区的某个文件的暂存状态
+
+  `git reset HEAD <file>`
+
+* 撤销对于某个文件的修改，将其还原成上次提交时候的样子
+
+  `git checkout -- <file>`
+
+---
+
+#### 8. 远程仓库
+
+* 查看远程仓库使用的 Git 保存的简写与其对应的 URL
+
+  `git remote -v`
+
+* 添加一个远程仓库
+
+  `git remote add <shortname> <url>`
+
+* 
